@@ -1,0 +1,189 @@
+<main class="page-shell">
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/images/Sodimac.svg" alt="Sodimac" />
+      <div>
+        <span>Submodulo ETQ</span>
+        <h1>Impresion de etiquetas</h1>
+      </div>
+    </div>
+    <div class="metrics">
+      <div>
+        <strong>{{ approvedCount() }}</strong>
+        <span>Aprobadas</span>
+      </div>
+      <div>
+        <strong>{{ rejectedCount() }}</strong>
+        <span>Rechazadas</span>
+      </div>
+      <div>
+        <strong>{{ reprintCount() }}</strong>
+        <span>Reimpresiones</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="workbench">
+    <form class="print-panel" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="panel-title">
+        <span class="material-symbols-outlined">print</span>
+        <h2>Solicitud</h2>
+      </div>
+
+      <label>
+        LPN o ETQ
+        <input type="text" formControlName="lpn" autocomplete="off" />
+      </label>
+
+      <label>
+        Zona
+        <select formControlName="zone">
+          @for (zone of zones; track zone) {
+            <option [value]="zone">{{ zone }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Usuario
+        <input type="text" formControlName="requestedBy" autocomplete="off" />
+      </label>
+
+      <label>
+        Motivo de reimpresion
+        <input type="text" formControlName="reprintReason" autocomplete="off" />
+      </label>
+
+      @if (form.controls.lpn.invalid && form.controls.lpn.touched) {
+        <p class="field-error">El identificador es obligatorio.</p>
+      }
+
+      <div class="actions">
+        <button type="submit" [disabled]="loading()">
+          <span class="material-symbols-outlined">print</span>
+          {{ loading() ? 'Procesando' : 'Imprimir' }}
+        </button>
+        <button type="button" class="secondary" (click)="loadHistory(form.controls.lpn.value)">
+          <span class="material-symbols-outlined">history</span>
+          Historial
+        </button>
+      </div>
+    </form>
+
+    <section class="result-panel">
+      <div class="panel-title">
+        <span class="material-symbols-outlined">fact_check</span>
+        <h2>Resultado</h2>
+      </div>
+
+      @if (error()) {
+        <div class="notice rejected">{{ error() }}</div>
+      }
+
+      @if (result(); as printResult) {
+        <div class="status" [class.approved]="printResult.result === 'APPROVED'" [class.rejected]="printResult.result === 'REJECTED'">
+          <div>
+            <span>{{ printResult.result }}</span>
+            <strong>{{ printResult.eventType }}</strong>
+          </div>
+          <small>{{ printResult.requestId }}</small>
+        </div>
+
+        @if (printResult.document) {
+          <dl class="summary-grid">
+            <div>
+              <dt>Documento</dt>
+              <dd>{{ printResult.document.documentNumber }}</dd>
+            </div>
+            <div>
+              <dt>Estado</dt>
+              <dd>{{ printResult.document.status }}</dd>
+            </div>
+            <div>
+              <dt>LPN</dt>
+              <dd>{{ printResult.label?.lpnId }}</dd>
+            </div>
+            <div>
+              <dt>ETQ</dt>
+              <dd>{{ printResult.label?.etqId }}</dd>
+            </div>
+          </dl>
+        }
+
+        @if (printResult.rejectionReasons.length) {
+          <div class="notice rejected">
+            @for (reason of printResult.rejectionReasons; track reason) {
+              <p>{{ reason }}</p>
+            }
+          </div>
+        }
+
+        @if (printResult.products?.length) {
+          <div class="products">
+            @for (product of printResult.products; track product.productCode) {
+              <div>
+                <strong>{{ product.productCode }}</strong>
+                <span>{{ product.productDescription }}</span>
+                <small>{{ product.requestedQty }} {{ product.uom }}</small>
+              </div>
+            }
+          </div>
+        }
+
+        @if (printResult.label?.zpl) {
+          <pre>{{ printResult.label?.zpl }}</pre>
+        }
+      } @else {
+        <div class="empty-state">
+          <span class="material-symbols-outlined">label</span>
+          <p>Sin resultado</p>
+        </div>
+      }
+    </section>
+  </section>
+
+  <section class="history-panel">
+    <div class="panel-title">
+      <span class="material-symbols-outlined">manage_search</span>
+      <h2>Auditoria</h2>
+      @if (historyLoading()) {
+        <small>Cargando</small>
+      }
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>LPN</th>
+            <th>ETQ</th>
+            <th>Zona</th>
+            <th>Usuario</th>
+            <th>Resultado</th>
+            <th>Evento</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of history(); track event.requestId) {
+            <tr>
+              <td>{{ event.timestamp | date: 'short' }}</td>
+              <td>{{ event.lpnId }}</td>
+              <td>{{ event.etqId }}</td>
+              <td>{{ event.zone }}</td>
+              <td>{{ event.requestedBy }}</td>
+              <td><span class="badge" [class.rejected]="event.result === 'REJECTED'">{{ event.result }}</span></td>
+              <td>{{ event.eventType }}</td>
+              <td>{{ event.reprintReason || event.reasons.join('; ') || '-' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8">Sin registros</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
