@@ -1,0 +1,32 @@
+[
+  {
+    "zone": "ZONA-PICKING-A",
+    "productCode": "PROD-001",
+    "availableQty": 10,
+    "isSupplied": true
+  },
+  {
+    "zone": "ZONA-PICKING-A",
+    "productCode": "PROD-002",
+    "availableQty": 4,
+    "isSupplied": true
+  },
+  {
+    "zone": "ZONA-PICKING-A",
+    "productCode": "PROD-003",
+    "availableQty": 2,
+    "isSupplied": true
+  },
+  {
+    "zone": "ZONA-PICKING-A",
+    "productCode": "PROD-004",
+    "availableQty": 10,
+    "isSupplied": false
+  },
+  {
+    "zone": "ZONA-PICKING-B",
+    "productCode": "PROD-001",
+    "availableQty": 0,
+    "isSupplied": false
+  }
+]

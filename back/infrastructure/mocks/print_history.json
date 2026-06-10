@@ -1,0 +1,14 @@
+[
+  {
+    "requestId": "AUD-20260605-0001",
+    "timestamp": "2026-06-05T11:10:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "etqId": "ETQ-10005",
+    "lpnId": "olpn-reprint",
+    "result": "APPROVED",
+    "eventType": "PRINT",
+    "reasons": [],
+    "reprintReason": null
+  }
+]

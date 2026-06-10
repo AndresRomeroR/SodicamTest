@@ -1,0 +1,5 @@
+[coverage:run]
+omit =
+    tests/*
+    api/routes/docs_routes.py
+    api/main.py

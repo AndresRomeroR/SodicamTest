@@ -1,0 +1,153 @@
+[
+  {
+    "requestId": "REQ-20260605-001",
+    "requestDateTime": "2026-06-05T10:15:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "document": {
+      "documentType": "NOTA_PEDIDO",
+      "documentNumber": "NP-458721",
+      "status": "LIBERADA"
+    },
+    "labels": [
+      {
+        "etqId": "ETQ-10001",
+        "lpnId": "olpn12345",
+        "isPreGenerated": true,
+        "templateCode": "TPL-ETQ-STD-4X6",
+        "zpl": "^XA^FO40,40^A0N,36,36^FDETQ-10001^FS^FO40,90^A0N,28,28^FDLPN: olpn12345^FS^FO40,140^BCN,120,Y,N,N^FDolpn12345^FS^XZ"
+      }
+    ],
+    "products": [
+      {
+        "productCode": "PROD-001",
+        "productDescription": "Martillo 16oz",
+        "requestedQty": 2,
+        "uom": "UND"
+      },
+      {
+        "productCode": "PROD-002",
+        "productDescription": "Guantes de seguridad",
+        "requestedQty": 1,
+        "uom": "PAR"
+      }
+    ],
+    "reprintReason": null
+  },
+  {
+    "requestId": "REQ-20260605-002",
+    "requestDateTime": "2026-06-05T10:25:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "document": {
+      "documentType": "NOTA_PEDIDO",
+      "documentNumber": "NP-458722",
+      "status": "ANULADA"
+    },
+    "labels": [
+      {
+        "etqId": "ETQ-10002",
+        "lpnId": "olpn-annulled",
+        "isPreGenerated": true,
+        "templateCode": "TPL-ETQ-STD-4X6",
+        "zpl": "^XA^FO40,40^FDANULADA^FS^XZ"
+      }
+    ],
+    "products": [
+      {
+        "productCode": "PROD-001",
+        "productDescription": "Martillo 16oz",
+        "requestedQty": 1,
+        "uom": "UND"
+      }
+    ],
+    "reprintReason": null
+  },
+  {
+    "requestId": "REQ-20260605-003",
+    "requestDateTime": "2026-06-05T10:35:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "document": {
+      "documentType": "NOTA_PEDIDO",
+      "documentNumber": "NP-458723",
+      "status": "LIBERADA"
+    },
+    "labels": [
+      {
+        "etqId": "ETQ-10003",
+        "lpnId": "olpn-shortage",
+        "isPreGenerated": true,
+        "templateCode": "TPL-ETQ-STD-4X6",
+        "zpl": "^XA^FO40,40^FDSHORTAGE^FS^XZ"
+      }
+    ],
+    "products": [
+      {
+        "productCode": "PROD-003",
+        "productDescription": "Taladro percutor",
+        "requestedQty": 5,
+        "uom": "UND"
+      }
+    ],
+    "reprintReason": null
+  },
+  {
+    "requestId": "REQ-20260605-004",
+    "requestDateTime": "2026-06-05T10:45:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "document": {
+      "documentType": "NOTA_PEDIDO",
+      "documentNumber": "NP-458724",
+      "status": "LIBERADA"
+    },
+    "labels": [
+      {
+        "etqId": "ETQ-10004",
+        "lpnId": "olpn-not-supplied",
+        "isPreGenerated": true,
+        "templateCode": "TPL-ETQ-STD-4X6",
+        "zpl": "^XA^FO40,40^FDNO SUPPLIED^FS^XZ"
+      }
+    ],
+    "products": [
+      {
+        "productCode": "PROD-004",
+        "productDescription": "Caja organizadora",
+        "requestedQty": 2,
+        "uom": "UND"
+      }
+    ],
+    "reprintReason": null
+  },
+  {
+    "requestId": "REQ-20260605-005",
+    "requestDateTime": "2026-06-05T10:55:00-05:00",
+    "requestedBy": "usuario.operacion",
+    "zone": "ZONA-PICKING-A",
+    "document": {
+      "documentType": "NOTA_PEDIDO",
+      "documentNumber": "NP-458725",
+      "status": "LIBERADA"
+    },
+    "labels": [
+      {
+        "etqId": "ETQ-10005",
+        "lpnId": "olpn-reprint",
+        "isPreGenerated": true,
+        "templateCode": "TPL-ETQ-STD-4X6",
+        "zpl": "^XA^FO40,40^FDREPRINT^FS^XZ"
+      }
+    ],
+    "products": [
+      {
+        "productCode": "PROD-001",
+        "productDescription": "Martillo 16oz",
+        "requestedQty": 1,
+        "uom": "UND"
+      }
+    ],
+    "reprintReason": "Etiqueta danada"
+  }
+]
