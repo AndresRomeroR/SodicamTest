@@ -15,6 +15,7 @@ dist/
 .cache/
 npm-debug.log*
 pnpm-debug.log*
+*.log
 
 back/data/*.json
 !back/data/.gitkeep
