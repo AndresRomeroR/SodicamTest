@@ -8,7 +8,7 @@ from domain.models import AuditEvent
 
 class AuditRepository:
     def __init__(self, history_file: Path | None = None, seed_file: Path | None = None):
-        default_history = Path("back/data/print_history.json")
+        default_history = Path(__file__).resolve().parents[1] / "data" / "print_history.json"
         self.history_file = history_file or Path(os.getenv("ETQ_HISTORY_FILE", default_history))
         self.seed_file = seed_file or Path(__file__).resolve().parent / "mocks" / "print_history.json"
 
