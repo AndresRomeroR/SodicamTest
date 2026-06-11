@@ -1,0 +1,626 @@
+{
+  "info": {
+    "_postman_id": "4ef5f1a8-0d44-4cb7-a67f-87a0a5f5e7a1",
+    "name": "ETQ Print - Local Backend",
+    "description": "Coleccion local para validar todos los endpoints del backend ETQ Print en http://127.0.0.1:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080",
+      "type": "string"
+    },
+    {
+      "key": "validLpn",
+      "value": "olpn12345",
+      "type": "string"
+    },
+    {
+      "key": "annulledLpn",
+      "value": "olpn-annulled",
+      "type": "string"
+    },
+    {
+      "key": "shortageLpn",
+      "value": "olpn-shortage",
+      "type": "string"
+    },
+    {
+      "key": "notSuppliedLpn",
+      "value": "olpn-not-supplied",
+      "type": "string"
+    },
+    {
+      "key": "reprintLpn",
+      "value": "olpn-reprint",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Service is healthy', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.isSuccessful).to.eql(true);",
+                  "  pm.expect(body.result.status).to.eql('ok');",
+                  "  pm.expect(body.result.service).to.eql('etq-print-api');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Root redirects or resolves docs', function () {",
+                  "  pm.expect([200, 307, 308]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "item": [
+        {
+          "name": "GET /openapi.json",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/openapi.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "openapi.json"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('OpenAPI is available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.info.title).to.eql('ETQ Print API');",
+                  "  pm.expect(body.paths).to.have.property('/api/v1/labels/print');",
+                  "  pm.expect(body.paths).to.have.property('/api/v1/labels/history');",
+                  "  pm.expect(body.paths).to.have.property('/health');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /docs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/docs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "docs"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Swagger UI is available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.text()).to.include('Swagger UI');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Labels - Print",
+      "item": [
+        {
+          "name": "POST /api/v1/labels/print - approved print",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lpn\": \"{{validLpn}}\",\n  \"zone\": \"ZONA-PICKING-A\",\n  \"requestedBy\": \"usuario.operacion\",\n  \"reprintReason\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Print is approved and returns ZPL', function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.isSuccessful).to.eql(true);",
+                  "  pm.expect(body.result.result).to.eql('APPROVED');",
+                  "  pm.expect(['PRINT', 'REPRINT']).to.include(body.result.eventType);",
+                  "  pm.expect(body.result.label.lpnId).to.eql(pm.collectionVariables.get('validLpn'));",
+                  "  pm.expect(body.result.label.zpl).to.be.a('string').and.include('^XA');",
+                  "  pm.expect(body.result.rejectionReasons).to.eql([]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - legacy request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request\": {\n    \"lpn\": \"{{validLpn}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Legacy request is accepted', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result.result).to.eql('APPROVED');",
+                  "  pm.expect(body.result.label.lpnId).to.eql(pm.collectionVariables.get('validLpn'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - rejected annulled document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lpn\": \"{{annulledLpn}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Annulled document is rejected', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result.result).to.eql('REJECTED');",
+                  "  pm.expect(body.result.eventType).to.eql('REJECTED');",
+                  "  pm.expect(body.result.rejectionReasons.join(' ')).to.include('ANULADA');",
+                  "  pm.expect(body.result.label.zpl).to.eql(null);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - rejected inventory shortage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lpn\": \"{{shortageLpn}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Inventory shortage is rejected', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result.result).to.eql('REJECTED');",
+                  "  pm.expect(body.result.rejectionReasons.join(' ')).to.include('disponibilidad insuficiente');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - rejected not supplied",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lpn\": \"{{notSuppliedLpn}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Not supplied product is rejected', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result.result).to.eql('REJECTED');",
+                  "  pm.expect(body.result.rejectionReasons.join(' ')).to.include('no abastecido');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - reprint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lpn\": \"{{reprintLpn}}\",\n  \"reprintReason\": \"Etiqueta ilegible\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Reprint is detected', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result.result).to.eql('APPROVED');",
+                  "  pm.expect(body.result.eventType).to.eql('REPRINT');",
+                  "  pm.expect(body.result.isReprint).to.eql(true);",
+                  "  pm.expect(body.result.reprintReason).to.eql('Etiqueta ilegible');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/labels/print - missing identifier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"zone\": \"ZONA-PICKING-A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/print",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "print"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing identifier returns 422', function () {",
+                  "  pm.response.to.have.status(422);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.detail).to.include('lpn or etqId is required');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Labels - History",
+      "item": [
+        {
+          "name": "GET /api/v1/labels/history - all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "history"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('History returns array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.isSuccessful).to.eql(true);",
+                  "  pm.expect(body.result).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/v1/labels/history - filtered by LPN",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/history?identifier={{validLpn}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "identifier",
+                  "value": "{{validLpn}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Filtered history returns matching events', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result).to.be.an('array');",
+                  "  if (body.result.length > 0) {",
+                  "    body.result.forEach((event) => {",
+                  "      pm.expect([event.lpnId, event.etqId]).to.include(pm.collectionVariables.get('validLpn'));",
+                  "    });",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/v1/labels/history - filtered by ETQ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/labels/history?identifier=ETQ-10001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "labels",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "identifier",
+                  "value": "ETQ-10001"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('ETQ filtered history returns array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.result).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
